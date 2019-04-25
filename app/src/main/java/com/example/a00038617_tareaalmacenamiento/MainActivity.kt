@@ -4,18 +4,11 @@ import android.Manifest
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
-import android.Manifest.permission
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.widget.Toast
-import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
-import android.os.Environment.getExternalStorageDirectory
-import android.util.Log
 import android.util.Log.*
-import sun.text.normalizer.UTF16.append
 import java.io.*
 
 
@@ -134,23 +127,18 @@ class MainActivity : AppCompatActivity() {
         i("ExternalStorageDemo", "Read file: $path")
 
         var linea = ""
-        var fileContent = ""
+        var fileContenido = ""
         try {
             val myFile = File(path)
             val fIn = FileInputStream(myFile)
-            val myReader = BufferedReader(
-                    InputStreamReader(fIn))
 
-            while ((linea = myReader.readLine()) != null) {
-                fileContent += linea + "\n"
-            }
-            myReader.close()
+            fileContenido = fIn.bufferedReader().use(BufferedReader::readText)
 
-            this.contenido.setText(fileContent)
+            contenido.text = fileContenido
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
-        Toast.makeText(applicationContext, fileContent, Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, fileContenido, Toast.LENGTH_LONG).show()
     }
 }
