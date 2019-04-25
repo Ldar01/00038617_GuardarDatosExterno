@@ -24,20 +24,24 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_ID_READ_PERMISSION = 100
     private val REQUEST_ID_WRITE_PERMISSION = 200
 
+    private val fileName = "prueba.txt"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         boton_guardar.setOnClickListener {
-
+            askPermissionAndWriteFile()
         }
-
+        boton_leer.setOnClickListener {
+            askPermissionAndReadFile()
+        }
     }
 
     fun askPermissionAndWriteFile() {
         val canWrite = this.askPermission(REQUEST_ID_WRITE_PERMISSION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        //
+
         if (canWrite) {
             this.writeFile()
         }
@@ -46,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     fun askPermissionAndReadFile() {
         val canRead = this.askPermission(REQUEST_ID_READ_PERMISSION,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
-        //
+
         if (canRead) {
             this.readFile()
         }
@@ -55,12 +59,10 @@ class MainActivity : AppCompatActivity() {
     fun askPermission(requestId: Int, permissionName: String): Boolean {
         if (android.os.Build.VERSION.SDK_INT >= 23) {
 
-            // Check if we have permission
             val permission = ActivityCompat.checkSelfPermission(this, permissionName)
 
 
             if (permission != PackageManager.PERMISSION_GRANTED) {
-                // If don't have permission so prompt the user.
                 this.requestPermissions(
                         arrayOf(permissionName),
                         requestId
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     private fun writeFile() {
 
         val extStore = Environment.getExternalStorageDirectory()
-        // ==> /storage/emulated/0/note.txt
+
         val path = extStore.getAbsolutePath() + "/" + fileName
         i("ExternalStorageDemo", "Save to: $path")
 
@@ -100,8 +102,6 @@ class MainActivity : AppCompatActivity() {
                                             permissions: Array<String>, grantResults: IntArray) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        //
-        // Note: If request is cancelled, the result arrays are empty.
         if (grantResults.size > 0) {
             when (requestCode) {
                 REQUEST_ID_READ_PERMISSION -> {
@@ -130,7 +130,6 @@ class MainActivity : AppCompatActivity() {
     private fun readFile() {
 
         val extStore = Environment.getExternalStorageDirectory()
-        // ==> /storage/emulated/0/note.txt
         val path = extStore.getAbsolutePath() + "/" + fileName
         i("ExternalStorageDemo", "Read file: $path")
 
@@ -143,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     InputStreamReader(fIn))
 
             while ((linea = myReader.readLine()) != null) {
-                fileContent += s + "\n"
+                fileContent += linea + "\n"
             }
             myReader.close()
 
